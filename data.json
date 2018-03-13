@@ -1,0 +1,12 @@
+{
+    "broker": {
+        "database": "berry_house",
+        "username": "root",
+        "password": "password"
+    },
+    "client": {
+        "database": "berry_house",
+        "username": "root",
+        "password": "password"
+    }
+}
