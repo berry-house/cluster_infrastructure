@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: client-secret
+type: Opaque
+data:
+  database: %s
+  username: %s
+  password: %s
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-svc
+spec:
+  type: LoadBalancer
+  selector:
+    app: client
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: client
+spec:
+  selector:
+    matchLabels:
+      app: client
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: client
+    spec:
+      containers:
+      - image: berryhouse/httpclient:2018-02-13
+        imagePullPolicy: Always
+        name: client
+        ports:
+        - containerPort: 3000
+          name: client
+        env:
+        - name: DATABASE_PORT
+          value: "3306"
+        - name: DATABASE_HOST
+          value: mysql
+        - name: DATABASE_NAME
+          valueFrom:
+            secretKeyRef:
+              name: client-secret
+              key: database
+        - name: DATABASE_USER
+          valueFrom:
+            secretKeyRef:
+              name: client-secret
+              key: username
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: client-secret
+              key: password
