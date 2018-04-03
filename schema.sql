@@ -1,5 +1,5 @@
 CREATE TABLE plant (
-     id INT,
+     id INT AUTO_INCREMENT,
      name TEXT,
      PRIMARY KEY(id)
 ) ;
